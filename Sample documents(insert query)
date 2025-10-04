@@ -1,0 +1,68 @@
+
+// ===============================
+// E-Commerce Catalog in MongoDB
+// ===============================
+
+// 1️⃣ Create & Use Database
+use ecommerceDB;
+
+// 2️⃣ Create Collection and Insert Sample Products
+db.products.insertMany([
+  {
+    name: "RoadWare Car Seat Cover",
+    price: 1999,
+    category: "Accessories",
+    variants: [
+      { color: "Black", size: "Standard", stock: 25 },
+      { color: "Beige", size: "Large", stock: 10 }
+    ]
+  },
+  {
+    name: "RoadWare LED Headlight",
+    price: 3499,
+    category: "Lighting",
+    variants: [
+      { color: "White", size: "Universal", stock: 50 },
+      { color: "Blue", size: "Universal", stock: 30 }
+    ]
+  },
+  {
+    name: "RoadWare Car Floor Mat",
+    price: 1299,
+    category: "Interior",
+    variants: [
+      { color: "Black", size: "Medium", stock: 15 },
+      { color: "Gray", size: "Large", stock: 8 }
+    ]
+  }
+]);
+
+// 3️⃣ Retrieve All Products
+print("=== All Products ===");
+db.products.find().pretty();
+
+// 4️⃣ Filter Products by Category (e.g., Lighting)
+print("=== Lighting Category Products ===");
+db.products.find({ category: "Lighting" }).pretty();
+
+// 5️⃣ Project Specific Variant Details (color & stock only)
+print("=== Product Variant Details ===");
+db.products.find(
+  {},
+  { name: 1, "variants.color": 1, "variants.stock": 1, _id: 0 }
+).pretty();
+
+// 6️⃣ Find Products having Variant Color = Black
+print("=== Products with Black Variant ===");
+db.products.find({ "variants.color": "Black" }).pretty();
+
+// 7️⃣ Update Stock of a Specific Variant (e.g., Blue LED Headlight)
+print("=== Updating Stock for Blue LED Headlight ===");
+db.products.updateOne(
+  { name: "RoadWare LED Headlight", "variants.color": "Blue" },
+  { $inc: { "variants.$.stock": 5 } }
+);
+
+// 8️⃣ Verify the Update
+print("=== Updated LED Headlight Document ===");
+db.products.find({ name: "RoadWare LED Headlight" }).pretty();
